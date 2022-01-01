@@ -1,0 +1,24 @@
+﻿@model IEnumerable<WebAppECartDemo.ViewModel.ShoppingViewModel>
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<div class="container">
+    <h2 class="text-center">Product List</h2>
+    @foreach (var item in Model)
+    {
+        <div class="col-md-3" style="margin-bottom: 30px">
+            <div style="text-align: center; border-bottom: 1px solid maroon">
+                <h4>@item.ItemName</h4>
+            </div>
+            <div class="thumbnail">
+                <div class="image" style="margin: 20px">
+                    <img class="img-responsive" src="@Url.Content(item.ImagePath)" height="200px" width="200px" />
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
