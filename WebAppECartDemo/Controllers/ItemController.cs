@@ -11,29 +11,25 @@ namespace WebAppECartDemo.Controllers
 {
     public class ItemController : Controller
     {
-
-        private ECartDBEntities objECartDBEntities;
+        private ECartDBEntities objECartDbEntities;
         public ItemController()
         {
-            objECartDBEntities = new ECartDBEntities();
+            objECartDbEntities = new ECartDBEntities();
         }
-
         // GET: Item
         public ActionResult Index()
         {
             ItemViewModel objItemViewModel = new ItemViewModel();
-            objItemViewModel.CategorySelectListItem = (from objCat in objECartDBEntities.Categories
-                select new SelectListItem()
-                {
-                     Text = objCat.CategoryName,
-                     Value = objCat.CategoryId.ToString(),
-                     Selected = true
-                 });
-
-
-
+            objItemViewModel.CategorySelectListItem = (from objCat in objECartDbEntities.Categories
+                                                       select new SelectListItem()
+                                                       {
+                                                           Text = objCat.CategoryName,
+                                                           Value = objCat.CategoryId.ToString(),
+                                                           Selected = true
+                                                       });
             return View(objItemViewModel);
         }
+
         [HttpPost]
         public JsonResult Index(ItemViewModel objItemViewModel)
         {
@@ -48,12 +44,10 @@ namespace WebAppECartDemo.Controllers
             objItem.ItemId = Guid.NewGuid();
             objItem.ItemName = objItemViewModel.ItemName;
             objItem.ItemPrice = objItemViewModel.ItemPrice;
-            objECartDBEntities.Items.Add(objItem);
-            objECartDBEntities.SaveChanges();
+            objECartDbEntities.Items.Add(objItem);
+            objECartDbEntities.SaveChanges();
 
-
-
-            return Json(new {Success = true, Message = "Item is added Successfully." }, JsonRequestBehavior.AllowGet);
+            return Json(new { Success = true, Message = "Item is added Successfully." }, JsonRequestBehavior.AllowGet);
         }
     }
 }

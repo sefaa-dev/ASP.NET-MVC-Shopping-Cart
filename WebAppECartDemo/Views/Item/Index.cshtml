@@ -13,13 +13,14 @@
     });
 
     function ResetItem() {
-        $("#CategoryId").val("");
+        $("#CategoryId").val("1");
         $("#ItemCode").val("");
         $("#ItemName").val("");
         $("#Description").val("");
         $("#ItemPrice").val("");
         $("#ImagePath").val("");
     }
+
     function SaveItem() {
         var formData = new FormData();
         formData.append("CategoryId", $("#CategoryId").val());
@@ -38,14 +39,10 @@
             url: '/Item/Index',
             data: formData,
             success: function (data) {
-                if (data.Success)
-                {
+                if (data.Success) {
                     alert(data.Message);
                     ResetItem();
-
                 }
-
-                
             },
             error: function () {
                 alert("There is some problem to add Item.");
@@ -59,7 +56,8 @@
     <div class="col-md-4">
         <div class="form-group">
             Category :
-            @Html.DropDownListFor(model => model.CategoryId, new SelectList(Model.CategorySelectListItem, "Value", "Text"), new { @class = "form-control" })
+            @Html.DropDownListFor(model => model.CategoryId, new SelectList(Model.CategorySelectListItem, "Value", "Text"),
+                new { @class = "form-control" })
         </div>
     </div>
 
@@ -73,7 +71,7 @@
     <div class="col-md-4">
         <div class="form-group">
             Item Name :
-            @Html.TextBoxFor(model => model.ItemName, new { @class = "form-control",autocomplete = "Off" })
+            @Html.TextBoxFor(model => model.ItemName, new { @class = "form-control", autocomplete = "Off" })
         </div>
     </div>
 
@@ -97,6 +95,7 @@
             @Html.TextBoxFor(model => model.ImagePath, new { type = "file", @class = "form-control" })
         </div>
     </div>
+
     <div>
         <input type="button" value="Save" name="save" class="btn btn-primary" id="btnSave" />
         &nbsp;
