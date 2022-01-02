@@ -30,7 +30,8 @@ namespace WebAppECartDemo.Controllers
                      Description = objItem.Description,
                      ItemPrice = objItem.ItemPrice,
                      ItemId = objItem.ItemId,
-                     Category = objCate.CategoryName
+                     Category = objCate.CategoryName,
+                     ItemCode = objItem.ItemCode
 
                  }
                 ).ToList();
