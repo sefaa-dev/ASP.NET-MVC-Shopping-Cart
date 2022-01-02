@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 using WebAppECartDemo.Models;
 using WebAppECartDemo.ViewModel;
@@ -12,7 +11,6 @@ namespace WebAppECartDemo.Controllers
     {
         private ECartDBEntities objECartDbEntities;
         private List<ShoppingCartModel> listOfShoppingCartModels;
-
         public ShoppingController()
         {
             objECartDbEntities = new ECartDBEntities();
@@ -22,25 +20,23 @@ namespace WebAppECartDemo.Controllers
         public ActionResult Index()
         {
             IEnumerable<ShoppingViewModel> listOfShoppingViewModels = (from objItem in objECartDbEntities.Items
-                 join
-                 objCate in objECartDbEntities.Categories
-                 on objItem.CategoryId equals objCate.CategoryId
-                 select new ShoppingViewModel()
-                 {
-                     ImagePath = objItem.ImagePath,
-                     ItemName = objItem.ItemName,
-                     Description = objItem.Description,
-                     ItemPrice = objItem.ItemPrice,
-                     ItemId = objItem.ItemId,
-                     Category = objCate.CategoryName,
-                     ItemCode = objItem.ItemCode
+                                                                       join
+                                                                           objCate in objECartDbEntities.Categories
+                                                                           on objItem.CategoryId equals objCate.CategoryId
+                                                                       select new ShoppingViewModel()
+                                                                       {
+                                                                           ImagePath = objItem.ImagePath,
+                                                                           ItemName = objItem.ItemName,
+                                                                           Description = objItem.Description,
+                                                                           ItemPrice = objItem.ItemPrice,
+                                                                           ItemId = objItem.ItemId,
+                                                                           Category = objCate.CategoryName,
+                                                                           ItemCode = objItem.ItemCode
+                                                                       }
 
-                 }
                 ).ToList();
-
             return View(listOfShoppingViewModels);
         }
-
 
         [HttpPost]
         public JsonResult Index(string ItemId)
@@ -70,15 +66,46 @@ namespace WebAppECartDemo.Controllers
 
             Session["CartCounter"] = listOfShoppingCartModels.Count;
             Session["CartItem"] = listOfShoppingCartModels;
-
-
-
-            return Json(data:new { Success = true, Counter = listOfShoppingCartModels.Count }, JsonRequestBehavior.AllowGet);
+            return Json(new { Success = true, Counter = listOfShoppingCartModels.Count }, JsonRequestBehavior.AllowGet);
         }
+
         public ActionResult ShoppingCart()
         {
             listOfShoppingCartModels = Session["CartItem"] as List<ShoppingCartModel>;
             return View(listOfShoppingCartModels);
+        }
+
+        [HttpPost]
+        public ActionResult AddOrder()
+        {
+            int OrderId = 0;
+            listOfShoppingCartModels = Session["CartItem"] as List<ShoppingCartModel>;
+            Order orderObj = new Order()
+            {
+                OrderDate = DateTime.Now,
+                OrderNumber = String.Format("{0:ddmmyyyyHHmmsss}", DateTime.Now)
+            };
+            objECartDbEntities.Orders.Add(orderObj);
+            objECartDbEntities.SaveChanges();
+            OrderId = orderObj.OrderId;
+
+            foreach (var item in listOfShoppingCartModels)
+            {
+                
+              
+                OrderDetail objOrderDetail = new OrderDetail();
+                objOrderDetail.Total = item.Total;
+                objOrderDetail.ItemId = item.ItemId;
+                objOrderDetail.OrderId = OrderId;
+                objOrderDetail.Quantity = item.Quantity;
+                objOrderDetail.UnitPrice = item.UnitPrice;
+                objECartDbEntities.OrderDetails.Add(objOrderDetail);
+                objECartDbEntities.SaveChanges();
+            }
+
+            Session["CartItem"] = null;
+            Session["CartCounter"] = null;
+            return RedirectToAction("Index");
         }
     }
 }

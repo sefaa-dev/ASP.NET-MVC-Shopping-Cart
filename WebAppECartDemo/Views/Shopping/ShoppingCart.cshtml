@@ -12,7 +12,7 @@
 @using (Html.BeginForm("AddOrder", "Shopping", FormMethod.Post))
 {
     <table class="table-condensed" style="width: 100%">
-        @*@foreach (var item in Model)*@
+       @foreach (var item in Model)
         {
             TotalAmount += item.Total;
             <tr>

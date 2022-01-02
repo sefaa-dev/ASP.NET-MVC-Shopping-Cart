@@ -7,5 +7,6 @@ namespace WebAppECartDemo.ViewModel
 {
     public class OrderDetailsModel
     {
+
     }
 }
